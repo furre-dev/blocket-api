@@ -30,8 +30,9 @@ export const filterInstructions = `
                     ## 🛠 MODEL-YEAR FILTERING
 
                     - If a specific **model generation** or **chassis code** is mentioned, apply known production years automatically:
-                      - **BMW F10 M5**: 'minModelYear: 2011', 'maxModelYear: 2016'
+                      - **BMW F10 M5**: 'modelYear.from: 2011', 'modelYear.to: 2016'
                       - Do **not** show other generations like F90, E39, etc. if a specific generation is mentioned.
+                      - EXAMPLE: **F30 320d**: 'modelYear.from: 2011', modelYear.to: 2019'
 
                     ---
 
