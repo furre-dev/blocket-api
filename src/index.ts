@@ -29,7 +29,13 @@ app.post("/create-filters-from-query", async (req: Request, res: Response) => {
     const result = await generateCarSearchFilters(body.search_query);
 
     if (!result) {
-      res.status(404).json({ error: "Your search did not match any of the listings." });
+      const error: BlocketAPIError = {
+        code: HttpStatusCode.NOT_FOUND,
+        message: "Your search did not match any of the listings.",
+        name: "NoMatches"
+      }
+
+      res.status(error.code).json({ error: error });
       return;
     }
 
