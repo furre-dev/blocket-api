@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { allBrands } from "../allCarModels"
+import { equipmentOptionsArray } from "../equipment/getAllEquipmentOptions";
 
 export const CarSearchObject = z.object({
   make: z.union([z.array(z.enum(allBrands)), z.null()]),
@@ -35,6 +36,7 @@ export const CarSearchObject = z.object({
     from: z.union([z.string(), z.null()]),
     to: z.union([z.string(), z.null()]),
   }),
+  equipment: z.union([z.array(z.enum(equipmentOptionsArray as [string, ...string[]])), z.null()]),
 });
 
 export const CarSearchResponseObject = z.object({

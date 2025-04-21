@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon --exec ts-node src/index.ts",
-    "scrape": "nodemon --exec ts-node src/scrape.ts",
+    "scrape-brands-models": "nodemon --exec ts-node src/scrapeMakesAndModels.ts",
+    "scrape-options": "ts-node src/scrapeEquipment.ts",
     "generate": "graphql-codegen --config codegen.ts",
     "build": "tsc"
   },
