@@ -11,9 +11,9 @@ app.use(express.json());
 const PORT = process.env.PORT || 3001;
 
 app.post("/create-filters-from-query", async (req: Request, res: Response) => {
-  const body: { search_query?: string } = req.body;
+  const body: { search_query?: string } | undefined = req.body;
 
-  if (!body.search_query) {
+  if (!body || !body.search_query) {
     res.status(400).json({ error: "Missing search_query" });
     return;
   }
