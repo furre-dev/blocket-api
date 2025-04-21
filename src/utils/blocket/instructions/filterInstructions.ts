@@ -80,6 +80,8 @@ export const filterInstructions = `
 
                     ## 🚫 NULL LOGIC SUMMARY
 
+                    Return 'null' if you find out that the user_input is not related to car searches. For example 'How are you?', then return null.
+
                     Return 'null' only if **no brand, model, or generation** is mentioned.  
                     Examples:
 

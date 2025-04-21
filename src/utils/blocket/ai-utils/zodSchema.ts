@@ -38,7 +38,7 @@ export const CarSearchObject = z.object({
 });
 
 export const CarSearchResponseObject = z.object({
-  car_data: CarSearchObject
+  car_data: z.union([CarSearchObject, z.null()])
 })
 
 export type ICarSearchResponseType = z.infer<typeof CarSearchResponseObject>;

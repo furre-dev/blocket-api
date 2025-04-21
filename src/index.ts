@@ -21,24 +21,26 @@ app.post("/create-filters-from-query", async (req: Request, res: Response) => {
   try {
     const result = await generateCarSearchFilters(body.search_query);
 
-    if (result) {
-      const { api_url, web_url } = createUrlFromSearchFilters(result);
-
-      const { car, error } = await getFirstListing(api_url);
-      if (error) {
-        console.error(error.message)
-      }
-
-      const responseObject = {
-        web_url: web_url,
-        example_listing: car
-      }
-
-      res.json(responseObject);
+    if (!result) {
+      res.status(404).json({ error: "Your search did not match any of the listings." });
       return;
     }
 
-    res.status(404).json({ error: "Your search did not match any of the listings." });
+    const { api_url, web_url } = createUrlFromSearchFilters(result);
+
+    const { car, error } = await getFirstListing(api_url);
+
+    if (error) {
+      res.status(error.code).json({ error: error.message });
+      return;
+    }
+
+    const responseObject = {
+      web_url: web_url,
+      example_listing: car
+    }
+
+    res.json(responseObject);
     return;
   } catch (error) {
     const err = error as {

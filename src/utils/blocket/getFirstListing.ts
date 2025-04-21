@@ -3,10 +3,10 @@ import { extractFieldsFromCarObject } from "./extractFieldsFromCarObject";
 
 type Errors = {
   message: "Could not create the Blocket API url",
-  code: 1
+  code: 400
 } | {
   message: "Could not find any car with the search param",
-  code: 2
+  code: 404
 }
 
 type FirstListingResponse = {
@@ -22,14 +22,15 @@ export const getFirstListing = async (api_url: string | null): Promise<FirstList
     car: null,
     error: {
       message: "Could not create the Blocket API url",
-      code: 1
+      code: 400
     }
   };
 
   const response = await fetch(api_url);
   const data: BlocketAPIResponse = await response.json();
 
-  if (data.cars) {
+  // if we can find a car.
+  if (data.cars && data.cars[0]) {
     const firstCar = data.cars[0];
     const extractedFieldsFromFirstCar = extractFieldsFromCarObject(firstCar)
 
@@ -43,7 +44,7 @@ export const getFirstListing = async (api_url: string | null): Promise<FirstList
     car: null,
     error: {
       message: "Could not find any car with the search param",
-      code: 2
+      code: 404
     }
   }
 

@@ -36,28 +36,28 @@ export async function generateCarSearchFilters(user_input: string) {
   });
 
   const result: ICarSearchResponseType | null = JSON.parse(response.output_text);
-  const car_data: ICarSearchQueryType | null = result?.car_data ?? null
+  const car_data: ICarSearchQueryType | null = result?.car_data ?? null;
 
-  if (car_data) {
-    const model_data = await generateCarModel({
-      make_brand: car_data.make,
-      input: user_input
-    });
-
-    if (!model_data) {
-      return car_data
-    }
-
-    // set models and search_text here =)
-    const newResult: ICarSearchQueryType = {
-      ...car_data,
-      models: model_data.make_model,
-      search_text: model_data.search_text,
-      engineEffect: model_data.engineEffect
-    };
-
-    return newResult
+  if (!result || !car_data) {
+    return null
   }
 
-  return null
+  const model_data = await generateCarModel({
+    make_brand: car_data.make,
+    input: user_input
+  });
+
+  if (!model_data) {
+    return car_data
+  }
+
+  // set models and search_text here =)
+  const newResult: ICarSearchQueryType = {
+    ...car_data,
+    models: model_data.make_model,
+    search_text: model_data.search_text,
+    engineEffect: model_data.engineEffect
+  };
+
+  return newResult
 }
