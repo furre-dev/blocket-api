@@ -1,51 +1,50 @@
-import { BlocketAPIResponse, CarListing, ExampleListing } from "../types";
+import HttpStatusCode from "../HttpStatusCode";
+import { BlocketAPIError } from "../types";
+import { BlocketAPIResponse, ExampleListing } from "./blocketTypes";
 import { extractFieldsFromCarObject } from "./extractFieldsFromCarObject";
-
-type Errors = {
-  message: "Could not create the Blocket API url",
-  code: 400
-} | {
-  message: "Could not find any car with the search param",
-  code: 404
-}
 
 type FirstListingResponse = {
   car: ExampleListing,
-  error: undefined
+  error: null
 } | {
   car: null,
-  error: Errors
+  error: BlocketAPIError
 }
 
-export const getFirstListing = async (api_url: string | null): Promise<FirstListingResponse> => {
-  if (!api_url) return {
-    car: null,
-    error: {
-      message: "Could not create the Blocket API url",
-      code: 400
+export const getFirstListing = async (api_url: string): Promise<FirstListingResponse> => {
+  try {
+    const response = await fetch(api_url);
+    const data: BlocketAPIResponse = await response.json();
+
+    // if we can find a car.
+    if (data.cars && data.cars[0]) {
+      const firstCar = data.cars[0];
+      const extractedFieldsFromFirstCar = extractFieldsFromCarObject(firstCar)
+
+      return {
+        car: extractedFieldsFromFirstCar,
+        error: null
+      }
     }
-  };
-
-  const response = await fetch(api_url);
-  const data: BlocketAPIResponse = await response.json();
-
-  // if we can find a car.
-  if (data.cars && data.cars[0]) {
-    const firstCar = data.cars[0];
-    const extractedFieldsFromFirstCar = extractFieldsFromCarObject(firstCar)
 
     return {
-      car: extractedFieldsFromFirstCar,
-      error: undefined
+      car: null,
+      error: {
+        message: "Could not find any car with the search param",
+        code: HttpStatusCode.NOT_FOUND,
+        name: "CarNotFound"
+      }
+    }
+  } catch (error) {
+    const err = error as Error;
+
+    return {
+      car: null,
+      error: {
+        message: err.message,
+        code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+        name: err.name
+      }
     }
   }
-
-  return {
-    car: null,
-    error: {
-      message: "Could not find any car with the search param",
-      code: 404
-    }
-  }
-
 }

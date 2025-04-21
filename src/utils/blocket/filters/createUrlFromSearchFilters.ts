@@ -1,22 +1,27 @@
 import { ICarSearchQueryType } from "../ai-utils/zodSchema";
 import { buildFilter } from "./buildFilter";
 import { generateBlocketUrl } from "../generateBlocketUrl";
+import { BlocketAPIError } from "../../types";
+import HttpStatusCode from "../../HttpStatusCode";
 
 // TODO: Handle object/array types better. Not clean right now!
 
 type UrlResponse = {
-  api_url: string | null,
-  web_url: string | null,
+  api_url: string,
+  web_url: string,
+  error: null
+} | {
+  api_url: null,
+  web_url: null,
+  error: BlocketAPIError
 }
 
 const API_URL = process.env.BLOCKET_API_URL;
 const WEB_URL = "https://www.blocket.se/bilar/sok"
 
 export function createUrlFromSearchFilters(filtered_search_obj: ICarSearchQueryType): UrlResponse {
-  let filtersArr = [];
+  let filtersArr: string[] = [];
   let searchQuery: string | null = null;
-
-  if (!filtered_search_obj) return { api_url: null, web_url: null };
 
   let filter: keyof ICarSearchQueryType;
 
@@ -62,13 +67,29 @@ export function createUrlFromSearchFilters(filtered_search_obj: ICarSearchQueryT
   }
 
   if (!API_URL) {
-    throw new Error("BLOCKET_API_URL env variable not found")
+    return {
+      api_url: null, web_url: null, error: {
+        message: "BLOCKET_API_URL env variable not found",
+        name: "MissingEnvironmentVariableError",
+        code: HttpStatusCode.INTERNAL_SERVER_ERROR
+      }
+    };
   }
 
-  const api_url = API_URL ? generateBlocketUrl(API_URL, filtersArr, searchQuery) : null
+  // if no filters applied and no searchQuery return error
+  if (filtersArr.length < 1 && !searchQuery) {
+    return {
+      api_url: null, web_url: null, error: {
+        message: "No filters or search words could be created from your search query.",
+        name: "MissingEnvironmentVariableError",
+        code: HttpStatusCode.BAD_REQUEST
+      }
+    };
+  }
+
+  const api_url = generateBlocketUrl(API_URL, filtersArr, searchQuery)
   const web_url = generateBlocketUrl(WEB_URL, filtersArr, searchQuery)
 
-
-  return { api_url, web_url };
+  return { api_url, web_url, error: null };
 }
 
