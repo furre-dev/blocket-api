@@ -1,4 +1,4 @@
-import { CarListing, ExampleListing } from "../types"
+import { CarListing, ExampleListing } from "./blocketTypes";
 
 export const extractFieldsFromCarObject = (firstCar: CarListing) => {
   const car = firstCar.car;

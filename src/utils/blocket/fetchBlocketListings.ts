@@ -1,4 +1,5 @@
-import { BlocketAPIResponse, CarListing } from "../types";
+
+import { BlocketAPIResponse, CarListing } from "./blocketTypes";
 import { generateModelMakeCarSearchURL } from "./filters/generateModelMakeCarSearchURL";
 import { MakeAndModelInput } from "./makeAndModelTypes";
 
