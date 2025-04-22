@@ -8,7 +8,7 @@ export const giveFeedbackOnBadQuery = async (search_query: string) => {
 
   const response = await openai.responses.create({
     model: "gpt-4.1-2025-04-14",
-    temperature: 0,
+    temperature: 1.5,
     input: [
       {
         role: "system",
