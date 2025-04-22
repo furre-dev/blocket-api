@@ -50,7 +50,7 @@ app.post("/create-filters-from-query", validateSearchQuery, async (req: Request,
       example_listing: firstListingResponse.car
     }
 
-    res.json(responseObject);
+    res.json({ data: responseObject });
     return;
   } catch (error) {
     const catchedError = error as Error;
