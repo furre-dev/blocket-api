@@ -6,6 +6,10 @@ import { createUrlFromSearchFilters } from './utils/blocket/filters/createUrlFro
 import { BlocketAPIError } from './utils/types';
 import HttpStatusCode from './utils/HttpStatusCode';
 import { validateSearchQuery } from './utils/validation/validateSearchQuery';
+import { connectToRedisClient } from './utils/redis/connectToRedisClient';
+import { redisMiddleware } from './utils/redis/redisMiddleware';
+import { createSession } from './utils/redis/utils/createSession';
+import { defaultCatchError } from './utils/createError';
 
 const app = express();
 app.use(cors());
@@ -13,7 +17,17 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
-app.post("/create-filters-from-query", validateSearchQuery, async (req: Request, res: Response) => {
+app.get("/create-session", async (req: Request, res: Response) => {
+  try {
+    const newSession = await createSession();
+    res.json({ token: newSession })
+  } catch (error) {
+    const catchError = defaultCatchError(error)
+    res.status(catchError.code).json({ error: catchError })
+  }
+})
+
+app.post("/create-filters-from-query", redisMiddleware, validateSearchQuery, async (req: Request, res: Response) => {
   const { search_query } = req.body as { search_query: string };
 
   try {
@@ -67,6 +81,16 @@ app.post("/create-filters-from-query", validateSearchQuery, async (req: Request,
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectToRedisClient();
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to connect to Redis or start the server.", error);
+    process.exit(1);
+  }
+}
+
+startServer();
