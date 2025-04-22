@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { redisClient } from "./redisClient";
 import { sessionExists } from "./utils/sessionExists";
-import HttpStatusCode from "../HttpStatusCode";
 import { defaultUnathroizedError } from "../createError";
 
 export const redisMiddleware = async (req: Request, res: Response, next: NextFunction) => {

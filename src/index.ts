@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import cors from "cors"
+import cors from "cors";
 import { generateCarSearchFilters } from './utils/blocket/ai-utils/generateCarSearchFilters';
 import { getFirstListing } from './utils/blocket/getFirstListing';
 import { createUrlFromSearchFilters } from './utils/blocket/filters/createUrlFromSearchFilters';
@@ -11,14 +11,21 @@ import { redisMiddleware } from './utils/redis/redisMiddleware';
 import { createSession } from './utils/redis/utils/createSession';
 import { defaultCatchError } from './utils/createError';
 import { sessionExists } from './utils/redis/utils/sessionExists';
+import 'dotenv/config'
+import { rateLimiter } from './utils/rateLimiter';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+
+if (process.env.NODE_ENV === "development") {
+  app.use(cors());
+}
 
 const PORT = process.env.PORT || 3001;
 
-app.get("/create-session", async (req: Request, res: Response) => {
+app.use(rateLimiter(30))
+
+app.get("/create-session", rateLimiter(5), async (req: Request, res: Response) => {
   try {
     const newSession = await createSession();
     res.json({ token: newSession })
