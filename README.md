@@ -130,3 +130,7 @@ Before processing, all incoming search queries are validated by the `isValidCarS
 ---
 
 _Easily build intelligent, authenticated & efficient car search tools on top of Blocket.se!_
+
+## API Architecture Sequence Diagram
+
+![mermaid](https://github.com/user-attachments/assets/49c87fc1-d84d-42da-a96d-46076308bc57)
