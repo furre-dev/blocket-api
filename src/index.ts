@@ -21,9 +21,9 @@ app.post("/create-filters-from-query", validateSearchQuery, async (req: Request,
 
     if (!result) {
       const error: BlocketAPIError = {
-        code: HttpStatusCode.NOT_FOUND,
-        message: "Your search did not match any of the listings.",
-        name: "NoMatches",
+        code: HttpStatusCode.BAD_REQUEST,
+        message: "Could not create any filtering from search query.",
+        name: "FailedFilterCreation",
         feedback: null
       }
 
