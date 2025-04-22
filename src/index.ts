@@ -5,6 +5,7 @@ import { getFirstListing } from './utils/blocket/getFirstListing';
 import { createUrlFromSearchFilters } from './utils/blocket/filters/createUrlFromSearchFilters';
 import { BlocketAPIError } from './utils/types';
 import HttpStatusCode from './utils/HttpStatusCode';
+import { validateSearchQuery } from './utils/validation/validateSearchQuery';
 
 const app = express();
 app.use(cors());
@@ -12,27 +13,18 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
-app.post("/create-filters-from-query", async (req: Request, res: Response) => {
-  const body: { search_query?: string } | undefined = req.body;
-
-  if (!body || !body.search_query) {
-    const error: BlocketAPIError = {
-      code: HttpStatusCode.BAD_REQUEST,
-      message: "Missing search_query",
-      name: "MissingSearchQuery"
-    }
-    res.status(error.code).json({ error: error });
-    return;
-  }
+app.post("/create-filters-from-query", validateSearchQuery, async (req: Request, res: Response) => {
+  const { search_query } = req.body as { search_query: string };
 
   try {
-    const result = await generateCarSearchFilters(body.search_query);
+    const result = await generateCarSearchFilters(search_query);
 
     if (!result) {
       const error: BlocketAPIError = {
         code: HttpStatusCode.NOT_FOUND,
         message: "Your search did not match any of the listings.",
-        name: "NoMatches"
+        name: "NoMatches",
+        feedback: null
       }
 
       res.status(error.code).json({ error: error });
@@ -66,7 +58,8 @@ app.post("/create-filters-from-query", async (req: Request, res: Response) => {
     const err: BlocketAPIError = {
       code: HttpStatusCode.INTERNAL_SERVER_ERROR,
       message: catchedError.message,
-      name: catchedError.name
+      name: catchedError.name,
+      feedback: null
     }
 
     res.status(err.code).json({ error: err });

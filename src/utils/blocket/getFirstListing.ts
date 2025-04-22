@@ -32,7 +32,8 @@ export const getFirstListing = async (api_url: string): Promise<FirstListingResp
       error: {
         message: "Could not find any car with the search param",
         code: HttpStatusCode.NOT_FOUND,
-        name: "CarNotFound"
+        name: "CarNotFound",
+        feedback: null
       }
     }
   } catch (error) {
@@ -43,7 +44,8 @@ export const getFirstListing = async (api_url: string): Promise<FirstListingResp
       error: {
         message: err.message,
         code: HttpStatusCode.INTERNAL_SERVER_ERROR,
-        name: err.name
+        name: err.name,
+        feedback: null
       }
     }
   }

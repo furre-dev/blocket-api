@@ -71,7 +71,8 @@ export function createUrlFromSearchFilters(filtered_search_obj: ICarSearchQueryT
       api_url: null, web_url: null, error: {
         message: "BLOCKET_API_URL env variable not found",
         name: "MissingEnvironmentVariableError",
-        code: HttpStatusCode.INTERNAL_SERVER_ERROR
+        code: HttpStatusCode.INTERNAL_SERVER_ERROR,
+        feedback: null
       }
     };
   }
@@ -82,7 +83,8 @@ export function createUrlFromSearchFilters(filtered_search_obj: ICarSearchQueryT
       api_url: null, web_url: null, error: {
         message: "No filters or search words could be created from your search query.",
         name: "MissingEnvironmentVariableError",
-        code: HttpStatusCode.BAD_REQUEST
+        code: HttpStatusCode.BAD_REQUEST,
+        feedback: null
       }
     };
   }
