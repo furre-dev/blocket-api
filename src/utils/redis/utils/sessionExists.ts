@@ -1,6 +1,6 @@
-import { RedisClientType } from "redis";
+import { redisClient } from "../redisClient";
 
-export const sessionExists = async (redisClient: RedisClientType<any>, sessionUid: string) => {
+export const sessionExists = async (sessionUid: string) => {
   const exists = await redisClient.exists(sessionUid);
   return exists === 1;
 }

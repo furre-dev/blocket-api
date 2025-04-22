@@ -19,7 +19,7 @@ export const redisMiddleware = async (req: Request, res: Response, next: NextFun
     return;
   }
 
-  const validSession = await sessionExists(redisClient, token);
+  const validSession = await sessionExists(token);
 
   if (validSession) {
     next();
