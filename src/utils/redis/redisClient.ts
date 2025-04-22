@@ -1,4 +1,5 @@
 import { createClient, RedisClientType } from 'redis';
+import 'dotenv/config';
 
 export const redisClient: RedisClientType = createClient({
   username: process.env.REDIS_USERNAME,
