@@ -3,9 +3,13 @@ import cors from "cors";
 import { rateLimiter } from './utils/rateLimiter';
 import { startServer } from './utils/startServer';
 import { apiV1Router } from './routes/apis/v1/route';
+import helmet from 'helmet';
 
 const app = express();
+
 app.use(express.json());
+app.use(helmet());
+
 
 if (process.env.NODE_ENV === "development") {
   app.use(cors());
