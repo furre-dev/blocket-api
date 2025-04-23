@@ -4,12 +4,15 @@ import { rateLimiter } from './utils/rateLimiter';
 import { startServer } from './utils/startServer';
 import { apiV1Router } from './routes/apis/v1/route';
 
+
 const app = express();
 app.use(express.json());
 
 if (process.env.NODE_ENV === "development") {
   app.use(cors());
 }
+
+app.set('trust proxy', true);
 
 const PORT = process.env.PORT || 3001;
 
@@ -21,5 +24,3 @@ app.use(rateLimiter(30));
 
 // use routes
 app.use("/api/v1", apiV1Router)
-
-
