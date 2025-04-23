@@ -4,7 +4,6 @@ import { rateLimiter } from './utils/rateLimiter';
 import { startServer } from './utils/startServer';
 import { apiV1Router } from './routes/apis/v1/route';
 
-
 const app = express();
 app.use(express.json());
 
@@ -17,7 +16,9 @@ app.set('trust proxy', true);
 const PORT = process.env.PORT || 3001;
 
 // start server, for example here connect to redis
-(async () => { await startServer(app, PORT); })()
+startServer(app, PORT).catch((e) => {
+  throw new Error(e)
+});
 
 // rate limit the wole api
 app.use(rateLimiter(30));
